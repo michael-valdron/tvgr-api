@@ -24,7 +24,6 @@ class VideoGameController @Inject()(val controllerComponents: ControllerComponen
 
   def deleteById(entryId: Long): Action[AnyContent] = Action {
     val foundEntry = videoGameList.find(_.id == entryId)
-
     foundEntry match {
       case Some(entry) =>
         videoGameList -= entry

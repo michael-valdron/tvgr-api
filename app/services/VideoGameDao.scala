@@ -19,6 +19,12 @@ class VideoGameDao(db: Database)(implicit ec: ExecutionContext) {
     db.run(action)
   }
 
+  def add(entry: VideoGameEntry): Future[Option[VideoGameEntry]] = {
+    val q = games.filter(_.id === entry.id)
+    val action = (games += entry) andThen q.result.headOption
+    db.run(action)
+  }
+
   def delete(entryId: Long): Future[Option[VideoGameEntry]] = {
     val q = games.filter(_.id === entryId)
     val actions = q.result.headOption zip q.delete

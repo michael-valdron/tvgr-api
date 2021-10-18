@@ -2,7 +2,6 @@ package controllers
 
 import models.VideoGameEntry
 import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfigProvider}
-import play.api.libs.json.Json
 import play.api.mvc._
 import services.VideoGameDao
 import slick.jdbc.JdbcProfile
@@ -17,31 +16,33 @@ class VideoGameController @Inject()(protected val dbConfigProvider: DatabaseConf
   extends AbstractController(controllerComponents) with HasDatabaseConfigProvider[JdbcProfile] {
   private val dao = new VideoGameDao(db)
 
-  def getAll: Action[AnyContent] = Action.async(dao.getAll.map(entries => Ok(Json.toJson(entries))))
+  def getAll: Action[AnyContent] = Action.async(dao.getAll.map(entries => Ok(VideoGameEntry.toJson(entries))))
 
   def getById(entryId: Long): Action[AnyContent] = Action.async {
     dao.get(entryId).map {
-      case Some(entry) => Ok(Json.toJson(entry))
+      case Some(entry) => Ok(VideoGameEntry.toJson(entry))
       case None => NotFound
     }
   }
 
   def add: Action[AnyContent] = Action.async { implicit request: Request[AnyContent] =>
     val input = request.body.asJson
-    val entry = input.map(Json.fromJson(_)(VideoGameEntry.jsonFormat).get)
+    val parsedInput = input.flatMap(VideoGameEntry.fromJson)
 
-    if (entry.nonEmpty)
-      dao.add(entry.get).map {
-        case Some(e) => Ok(Json.toJson(e))
-        case None => InternalServerError
+    if (parsedInput.nonEmpty) {
+      parsedInput.get match {
+        case Left(entry) => dao.add(entry).map {
+          case Some(e) => Ok(VideoGameEntry.toJson(e))
+          case None => InternalServerError
+        }
+        case Right(_) => Future(UnprocessableEntity)
       }
-    else
-      Future(NoContent)
+    } else Future(BadRequest)
   }
 
   def deleteById(entryId: Long): Action[AnyContent] = Action.async {
     dao.delete(entryId).map {
-      case Some(entry) => Ok(Json.toJson(entry))
+      case Some(entry) => Ok(VideoGameEntry.toJson(entry))
       case None => NotFound
     }
   }

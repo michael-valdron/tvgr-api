@@ -1,11 +1,15 @@
 package services
 
 import models.{VideoGameEntry, VideoGames}
+import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfigProvider}
+import slick.jdbc.JdbcProfile
 import slick.jdbc.PostgresProfile.api._
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class VideoGameDao(db: Database)(implicit ec: ExecutionContext) {
+class VideoGameDao @Inject()(protected val dbConfigProvider: DatabaseConfigProvider)(implicit ec: ExecutionContext)
+  extends HasDatabaseConfigProvider[JdbcProfile] {
   private val games = TableQuery[VideoGames]
 
   def get(entryId: Long): Future[Option[VideoGameEntry]] = {

@@ -2,7 +2,7 @@ package controllers
 
 import models.VideoGameEntry
 import play.api.mvc._
-import services.VideoGameDao
+import dao.VideoGameDao
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}

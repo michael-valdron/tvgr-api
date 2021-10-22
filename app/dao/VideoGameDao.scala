@@ -10,21 +10,21 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class VideoGameDao @Inject()(protected val dbConfigProvider: DatabaseConfigProvider)(implicit ec: ExecutionContext)
   extends HasDatabaseConfigProvider[JdbcProfile] {
-  private val games = TableQuery[VideoGames]
+  implicit private val games: TableQuery[VideoGames] = TableQuery[VideoGames]
 
-  def filterById(entryId: Long)(query: Query[VideoGames, VideoGameEntry, Seq]): Query[VideoGames, VideoGameEntry, Seq] =
+  def filterById(entryId: Long)(implicit query: Query[VideoGames, VideoGameEntry, Seq]): Query[VideoGames, VideoGameEntry, Seq] =
     query.filter(_.id === entryId)
 
   def get(entryId: Long): Future[Option[VideoGameEntry]] =
-    db.run(filterById(entryId)(games).result.headOption)
+    db.run(filterById(entryId).result.headOption)
 
   def getAll: Future[Seq[VideoGameEntry]] = db.run(games.result)
 
   def add(entry: VideoGameEntry): Future[Option[VideoGameEntry]] =
-    db.run((games += entry) andThen filterById(entry.id)(games).result.headOption)
+    db.run((games += entry) andThen filterById(entry.id).result.headOption)
 
   def delete(entryId: Long): Future[Option[VideoGameEntry]] = {
-    val q = filterById(entryId)(games)
+    val q = filterById(entryId)
     db.run(q.result.headOption zip q.delete).map(_._1)
   }
 }

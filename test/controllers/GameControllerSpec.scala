@@ -1,7 +1,7 @@
 package controllers
 
 import fixtures.MyDataFixture
-import models.GameEntry
+import models.Game
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneServerPerSuite
@@ -17,7 +17,7 @@ class GameControllerSpec() extends PlaySpec with MyDataFixture
     "return all records" in withSetupTeardown {
       val futureResult = wsCall(Call("GET", "/v1/games")).get()
       val status = futureResult.futureValue.status
-      val result = GameEntry.fromJsonArray(futureResult.futureValue.json)
+      val result = Game.fromJsonArray(futureResult.futureValue.json)
       status mustEqual 200
       assert(result.nonEmpty)
       result.get mustEqual testData
@@ -35,7 +35,7 @@ class GameControllerSpec() extends PlaySpec with MyDataFixture
       val entityId = testData.head.id
       val futureResult = wsCall(Call("GET", s"/v1/game/$entityId")).get()
       val status = futureResult.futureValue.status
-      val result = GameEntry.fromJson(futureResult.futureValue.json)
+      val result = Game.fromJson(futureResult.futureValue.json)
       status mustEqual 200
       assert(result.nonEmpty)
       result.get.id mustEqual entityId
@@ -44,10 +44,10 @@ class GameControllerSpec() extends PlaySpec with MyDataFixture
 
   "PUT '/v1/game/add'" must {
     "add entry to database and return it" in withSetupTeardown {
-      val entity = GameEntry(45363, "Grim Conclusions", "Shooter", "", "2001-01-13")
-      val futureResult = wsCall(Call("PUT", "/v1/game/add")).put(GameEntry.toJson(entity))
+      val entity = Game(45363, "Grim Conclusions", "Shooter", "", "2001-01-13")
+      val futureResult = wsCall(Call("PUT", "/v1/game/add")).put(Game.toJson(entity))
       val status = futureResult.futureValue.status
-      val result = GameEntry.fromJson(futureResult.futureValue.json)
+      val result = Game.fromJson(futureResult.futureValue.json)
       status mustEqual 200
       assert(result.nonEmpty)
       result.get mustEqual entity
@@ -57,11 +57,11 @@ class GameControllerSpec() extends PlaySpec with MyDataFixture
   "POST '/v1/edit/243425'" must {
     "edit entry in database and return it" in withSetupTeardown {
       val entity = testData.head
-      val data = GameEntry.toMap(entity.copy(description = "A different description.")) - "id"
+      val data = Game.toMap(entity.copy(description = "A different description.")) - "id"
       val futureResult = wsCall(Call("POST", s"/v1/edit/${entity.id}"))
         .post(Json.toJson(data))
       val status = futureResult.futureValue.status
-      val result = GameEntry.fromJson(futureResult.futureValue.json)
+      val result = Game.fromJson(futureResult.futureValue.json)
       assert(status == 200, s"expected status = 200, but got status = $status")
       assert(result.nonEmpty, s"result is empty")
       assert(result.get.id == entity.id, s"expected id = ${entity.id}, but got id = ${result.get.id}")
@@ -74,7 +74,7 @@ class GameControllerSpec() extends PlaySpec with MyDataFixture
       val entity = testData.head
       val futureResult = wsCall(Call("DELETE", s"/v1/game/${entity.id}")).delete()
       val status = futureResult.futureValue.status
-      val result = GameEntry.fromJson(futureResult.futureValue.json)
+      val result = Game.fromJson(futureResult.futureValue.json)
       status mustEqual 200
       assert(result.nonEmpty)
       result.get mustEqual entity

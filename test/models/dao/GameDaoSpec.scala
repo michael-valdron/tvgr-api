@@ -1,7 +1,7 @@
 package models.dao
 
 import fixtures.MyDataFixture
-import models.GameEntry
+import models.Game
 import models.tables.Games
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.play.PlaySpec
@@ -28,7 +28,7 @@ class GameDaoSpec extends PlaySpec
 
   "testAdd" should {
     "add new record '123456' and return it" in withSetupTeardown {
-      val entry = GameEntry(123456, "A Simple Game", "Platformer",
+      val entry = Game(123456, "A Simple Game", "Platformer",
         "A basic game for the basic gamer.", "2020-04-10")
       val Some(result) = dao.add(entry).futureValue
       assert(result.id === entry.id)

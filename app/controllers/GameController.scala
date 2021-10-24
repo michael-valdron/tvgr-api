@@ -1,7 +1,7 @@
 package controllers
 
-import dao.VideoGameDao
-import models.VideoGameEntry
+import models.dao.GameDao
+import models.GameEntry
 import play.api.libs.json.Json
 import play.api.mvc._
 
@@ -9,26 +9,26 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class VideoGameController @Inject()(dao: VideoGameDao,
-                                    controllerComponents: ControllerComponents)(implicit ec: ExecutionContext)
+class GameController @Inject()(dao: GameDao,
+                               controllerComponents: ControllerComponents)(implicit ec: ExecutionContext)
   extends AbstractController(controllerComponents) {
 
-  def getAll: Action[AnyContent] = Action.async(dao.getAll.map(entries => Ok(VideoGameEntry.toJson(entries))))
+  def getAll: Action[AnyContent] = Action.async(dao.getAll.map(entries => Ok(GameEntry.toJson(entries))))
 
   def getById(entryId: Long): Action[AnyContent] = Action.async {
     dao.get(entryId).map {
-      case Some(entry) => Ok(VideoGameEntry.toJson(entry))
+      case Some(entry) => Ok(GameEntry.toJson(entry))
       case None => NotFound
     }
   }
 
   def add: Action[AnyContent] = Action.async { request =>
     val input = request.body.asJson
-    val parsedEntry = input.flatMap(VideoGameEntry.fromJson)
+    val parsedEntry = input.flatMap(GameEntry.fromJson)
 
     parsedEntry match {
       case Some(entry) => dao.add(entry).map {
-        case Some(e) => Ok(VideoGameEntry.toJson(e))
+        case Some(e) => Ok(GameEntry.toJson(e))
         case None => InternalServerError
       }
       case None => Future(BadRequest)
@@ -45,9 +45,9 @@ class VideoGameController @Inject()(dao: VideoGameDao,
     if (data.isEmpty)
       Future(BadRequest(Json.toJson(Map.empty[String, String])))
     else {
-      val entry = VideoGameEntry.fromMap(data + ("id" -> entryId))
+      val entry = GameEntry.fromMap(data + ("id" -> entryId))
       dao.edit(entry).map {
-        case Some(result) => Ok(VideoGameEntry.toJson(result))
+        case Some(result) => Ok(GameEntry.toJson(result))
         case None => NotFound(Json.toJson(Map.empty[String, String]))
       }
     }
@@ -55,7 +55,7 @@ class VideoGameController @Inject()(dao: VideoGameDao,
 
   def deleteById(entryId: Long): Action[AnyContent] = Action.async {
     dao.delete(entryId).map {
-      case Some(entry) => Ok(VideoGameEntry.toJson(entry))
+      case Some(entry) => Ok(GameEntry.toJson(entry))
       case None => NotFound
     }
   }

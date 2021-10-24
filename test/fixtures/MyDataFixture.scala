@@ -1,7 +1,8 @@
 package fixtures
 
 import com.typesafe.config.ConfigFactory
-import models.{VideoGameEntry, VideoGames}
+import models.GameEntry
+import models.tables.Games
 import slick.basic.DatabaseConfig
 import slick.jdbc.PostgresProfile
 import slick.jdbc.PostgresProfile.api._
@@ -10,9 +11,9 @@ import scala.concurrent.Await
 import scala.concurrent.duration.Duration
 
 trait MyDataFixture extends MyBaseFixture {
-  protected val testData: Array[VideoGameEntry] = Array(
-    VideoGameEntry(243425, "Well of Quests", "RPG", "An adventure game of the ages!", "2005-10-01"),
-    VideoGameEntry(546324, "Racing 2020", "Racing", "Race with the best cars of 2020.", "2020-11-12")
+  protected val testData: Array[GameEntry] = Array(
+    GameEntry(243425, "Well of Quests", "RPG", "An adventure game of the ages!", "2005-10-01"),
+    GameEntry(546324, "Racing 2020", "Racing", "Race with the best cars of 2020.", "2020-11-12")
   )
 
   protected def loadDb: Database =
@@ -22,7 +23,7 @@ trait MyDataFixture extends MyBaseFixture {
 
   protected def setup(): Unit = {
     val db = loadDb
-    val games = TableQuery[VideoGames]
+    val games = TableQuery[Games]
     val setup = DBIO.seq(
       games.schema.create,
       games ++= testData
@@ -37,7 +38,7 @@ trait MyDataFixture extends MyBaseFixture {
 
   protected def teardown(): Unit = {
     val db = loadDb
-    val games = TableQuery[VideoGames]
+    val games = TableQuery[Games]
     val setup = DBIO.seq(
       games.delete,
       games.schema.drop

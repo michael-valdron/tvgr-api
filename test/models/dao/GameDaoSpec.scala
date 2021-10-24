@@ -1,15 +1,16 @@
-package dao
+package models.dao
 
 import fixtures.MyDataFixture
-import models.{VideoGameEntry, VideoGames}
+import models.GameEntry
+import models.tables.Games
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import slick.jdbc.PostgresProfile.api._
 
-class VideoGameDaoSpec extends PlaySpec
+class GameDaoSpec extends PlaySpec
   with GuiceOneAppPerSuite with ScalaFutures with MyDataFixture {
-  private val dao = fetchDao[VideoGameDao](app)
+  private val dao = fetchDao[GameDao](app)
 
   "testGet" should {
     "pull a record at id = 243425" in withSetupTeardown {
@@ -27,7 +28,7 @@ class VideoGameDaoSpec extends PlaySpec
 
   "testAdd" should {
     "add new record '123456' and return it" in withSetupTeardown {
-      val entry = VideoGameEntry(123456, "A Simple Game", "Platformer",
+      val entry = GameEntry(123456, "A Simple Game", "Platformer",
         "A basic game for the basic gamer.", "2020-04-10")
       val Some(result) = dao.add(entry).futureValue
       assert(result.id === entry.id)
@@ -55,7 +56,7 @@ class VideoGameDaoSpec extends PlaySpec
   "testFilterById" should {
     "create filter by id query entity for finding record '243425' in 'games' relation" in withSetupTeardown {
       val db = loadDb
-      val action = dao.filterById(243425)(TableQuery[VideoGames])
+      val action = dao.filterById(243425)(TableQuery[Games])
       val result = db.run(action.result).futureValue
       assert(result.nonEmpty)
       assert(result.head.id === 243425)

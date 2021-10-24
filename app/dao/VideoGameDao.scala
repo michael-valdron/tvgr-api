@@ -23,6 +23,10 @@ class VideoGameDao @Inject()(protected val dbConfigProvider: DatabaseConfigProvi
   def add(entry: VideoGameEntry): Future[Option[VideoGameEntry]] =
     db.run((games += entry) andThen filterById(entry.id).result.headOption)
 
+  def edit(entry: VideoGameEntry): Future[Option[VideoGameEntry]] = {
+    throw new NotImplementedError
+  }
+
   def delete(entryId: Long): Future[Option[VideoGameEntry]] = {
     val q = filterById(entryId)
     db.run(q.result.headOption zip q.delete).map(_._1)

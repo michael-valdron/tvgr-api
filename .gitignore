@@ -8,4 +8,3 @@ target
 /.settings
 /.env
 /RUNNING_PID
-/conf/application.conf

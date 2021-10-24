@@ -12,7 +12,8 @@ class VideoGameDao @Inject()(protected val dbConfigProvider: DatabaseConfigProvi
   extends HasDatabaseConfigProvider[JdbcProfile] {
   implicit private val games: TableQuery[VideoGames] = TableQuery[VideoGames]
 
-  def filterById(entryId: Long)(implicit query: Query[VideoGames, VideoGameEntry, Seq]): Query[VideoGames, VideoGameEntry, Seq] =
+  def filterById(entryId: Long)(
+    implicit query: Query[VideoGames, VideoGameEntry, Seq]): Query[VideoGames, VideoGameEntry, Seq] =
     query.filter(_.id === entryId)
 
   def get(entryId: Long): Future[Option[VideoGameEntry]] =
@@ -24,7 +25,8 @@ class VideoGameDao @Inject()(protected val dbConfigProvider: DatabaseConfigProvi
     db.run((games += entry) andThen filterById(entry.id).result.headOption)
 
   def edit(entry: VideoGameEntry): Future[Option[VideoGameEntry]] = {
-    throw new NotImplementedError
+    val q = filterById(entry.id)
+    db.run(q.update(entry) andThen q.result.headOption)
   }
 
   def delete(entryId: Long): Future[Option[VideoGameEntry]] = {

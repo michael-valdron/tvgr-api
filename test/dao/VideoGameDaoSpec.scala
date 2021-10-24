@@ -36,6 +36,15 @@ class VideoGameDaoSpec extends PlaySpec
     }
   }
 
+  "testEdit" should {
+    "edit record '243425' and return it" in withSetupTeardown {
+      val entry = testData.head
+      val Some(result) = dao.edit(entry.copy(description = "A different description.")).futureValue
+      result.id mustEqual entry.id
+      assert(result.description != entry.description)
+    }
+  }
+
   "testDelete" should  {
     "delete record at id = '243425' and return it" in withSetupTeardown {
       val Some(result) = dao.delete(243425).futureValue
@@ -52,5 +61,4 @@ class VideoGameDaoSpec extends PlaySpec
       assert(result.head.id === 243425)
     }
   }
-
 }

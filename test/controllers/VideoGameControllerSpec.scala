@@ -33,7 +33,7 @@ class VideoGameControllerSpec() extends PlaySpec with MyDataFixture
 
   "PUT '/v1/game/add'" must {
     "add entry to database and return it" in withSetupTeardown {
-      val entity = VideoGameEntry(45363, "Halo", "Shooter", "", "2001-11-15")
+      val entity = VideoGameEntry(45363, "Grim Conclusions", "Shooter", "", "2001-01-13")
       val futureResult = wsCall(Call("PUT", "/v1/game/add")).put(VideoGameEntry.toJson(entity))
       val status = futureResult.futureValue.status
       val result = VideoGameEntry.fromJson(futureResult.futureValue.json)

@@ -10,6 +10,14 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
+    env:
+      COMPOSE_FILE: .github/docker-compose.yml
+      SLICK_TEST_DBPATH: slick.dbs.default
+      POSTGRES_URL: ${{ secrets.POSTGRES_URL }}
+      POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+      POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+      POSTGRES_THREADS: 10
+      POSTGRES_MAX_CONNECTIONS: 10
 
     steps:
     - uses: actions/checkout@v2
@@ -18,5 +26,7 @@ jobs:
       with:
         java-version: '11'
         distribution: 'adopt'
+    - name: Run Testing PostgreSQL Database
+      run: docker-compose run postgres
     - name: Run tests
       run: sbt test

@@ -6,6 +6,32 @@ import play.api.libs.json.Json
 class VideoGameEntrySpec extends PlaySpec {
 
   "VideoGameEntrySpec" should {
+    "create entry from Map using fromMap" in {
+      val map = Map(
+        "id" -> 5345325,
+        "title" -> "Some Game",
+        "genre" -> "Adventure",
+        "description" -> "Just some game.",
+        "releaseDate" -> "2021-02-17"
+      )
+      val result = VideoGameEntry.fromMap(map)
+      result.id mustEqual map("id")
+      result.title mustEqual map("title")
+      result.genre mustEqual map("genre")
+      result.description mustEqual map("description")
+      result.releaseDate mustEqual map("releaseDate")
+    }
+
+    "create Map from entry using toMap" in {
+      val entry = VideoGameEntry(5345325, "Some Game", "Adventure", "Just some game.", "2021-02-17")
+      val result = VideoGameEntry.toMap(entry)
+      result("id") mustEqual f"${entry.id}"
+      result("title") mustEqual entry.title
+      result("genre") mustEqual entry.genre
+      result("description") mustEqual entry.description
+      result("releaseDate") mustEqual entry.releaseDate
+    }
+
     "create entry from json using fromJson" in {
       val json = Json.parse("{\"id\":5345325,\"title\":\"Some Game\",\"genre\":\"Adventure\"," +
         "\"description\":\"Just some game.\",\"releaseDate\":\"2021-02-17\"}")

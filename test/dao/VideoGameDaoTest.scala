@@ -44,7 +44,7 @@ class VideoGameDaoTest extends PlaySpec with ScalaFutures with MyDataFixture {
 
   "testFilterById" should {
     "create filter by id query entity for finding record '243425' in 'games' relation" in withSetupTeardown {
-      val db = Database.forConfig(dbPath)
+      val db = loadDb
       val action = dao.filterById(243425)(TableQuery[VideoGames])
       val result = db.run(action.result).futureValue
       assert(result.nonEmpty)

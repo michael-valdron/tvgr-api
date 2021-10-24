@@ -1,8 +1,9 @@
 package controllers
 
-import models.VideoGameEntry
-import play.api.mvc._
 import dao.VideoGameDao
+import models.VideoGameEntry
+import play.api.libs.json.Json
+import play.api.mvc._
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -21,7 +22,7 @@ class VideoGameController @Inject()(dao: VideoGameDao,
     }
   }
 
-  def add: Action[AnyContent] = Action.async { implicit request: Request[AnyContent] =>
+  def add: Action[AnyContent] = Action.async { request =>
     val input = request.body.asJson
     val parsedEntry = input.flatMap(VideoGameEntry.fromJson)
 
@@ -31,6 +32,24 @@ class VideoGameController @Inject()(dao: VideoGameDao,
         case None => InternalServerError
       }
       case None => Future(BadRequest)
+    }
+  }
+
+  def editById(entryId: Long): Action[AnyContent] = Action.async { request =>
+    val input =  request.body.asJson
+    val parsedResult = input.map(Json.fromJson[Map[String, String]])
+    val data: Map[String, Any] = parsedResult match {
+      case Some(result) => if (result.isSuccess) result.get else Map.empty[String, String]
+      case None => Map.empty[String, String]
+    }
+    if (data.isEmpty)
+      Future(BadRequest(Json.toJson(Map.empty[String, String])))
+    else {
+      val entry = VideoGameEntry.fromMap(data + ("id" -> entryId))
+      dao.edit(entry).map {
+        case Some(result) => Ok(VideoGameEntry.toJson(result))
+        case None => NotFound(Json.toJson(Map.empty[String, String]))
+      }
     }
   }
 

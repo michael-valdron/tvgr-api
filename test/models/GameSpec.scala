@@ -3,13 +3,39 @@ package models
 import org.scalatestplus.play.PlaySpec
 import play.api.libs.json.Json
 
-class VideoGameEntrySpec extends PlaySpec {
+class GameSpec extends PlaySpec {
 
   "VideoGameEntrySpec" should {
+    "create entry from Map using fromMap" in {
+      val map = Map(
+        "id" -> 5345325,
+        "title" -> "Some Game",
+        "genre" -> "Adventure",
+        "description" -> "Just some game.",
+        "releaseDate" -> "2021-02-17"
+      )
+      val result = Game.fromMap(map)
+      result.id mustEqual map("id")
+      result.title mustEqual map("title")
+      result.genre mustEqual map("genre")
+      result.description mustEqual map("description")
+      result.releaseDate mustEqual map("releaseDate")
+    }
+
+    "create Map from entry using toMap" in {
+      val entry = Game(5345325, "Some Game", "Adventure", "Just some game.", "2021-02-17")
+      val result = Game.toMap(entry)
+      result("id") mustEqual f"${entry.id}"
+      result("title") mustEqual entry.title
+      result("genre") mustEqual entry.genre
+      result("description") mustEqual entry.description
+      result("releaseDate") mustEqual entry.releaseDate
+    }
+
     "create entry from json using fromJson" in {
       val json = Json.parse("{\"id\":5345325,\"title\":\"Some Game\",\"genre\":\"Adventure\"," +
         "\"description\":\"Just some game.\",\"releaseDate\":\"2021-02-17\"}")
-      val Some(result) = VideoGameEntry.fromJson(json)
+      val Some(result) = Game.fromJson(json)
       result.id mustEqual 5345325
       result.title mustEqual "Some Game"
       result.genre mustEqual "Adventure"
@@ -18,7 +44,7 @@ class VideoGameEntrySpec extends PlaySpec {
     }
 
     "create entry from apply" in {
-      val result = VideoGameEntry.apply(5345325, "Some Game", "Adventure", "Just some game.", "2021-02-17")
+      val result = Game.apply(5345325, "Some Game", "Adventure", "Just some game.", "2021-02-17")
       result.id mustEqual 5345325
       result.title mustEqual "Some Game"
       result.genre mustEqual "Adventure"
@@ -27,29 +53,29 @@ class VideoGameEntrySpec extends PlaySpec {
     }
 
     "create json from single entry by using toJson" in {
-      val entry = VideoGameEntry(5345325, "Some Game", "Adventure", "Just some game.", "2021-02-17")
+      val entry = Game(5345325, "Some Game", "Adventure", "Just some game.", "2021-02-17")
       val expected = Json.parse("{\"id\":5345325,\"title\":\"Some Game\",\"genre\":\"Adventure\"," +
         "\"description\":\"Just some game.\",\"releaseDate\":\"2021-02-17\"}")
-      val result = VideoGameEntry.toJson(entry)
+      val result = Game.toJson(entry)
       result mustEqual expected
     }
 
     "create json from multiple entries by using toJson" in {
       val entries = Array(
-        VideoGameEntry(5345325, "Some Game", "Adventure", "Just some game.", "2021-02-17"),
-        VideoGameEntry(3484504, "Another Game", "Adventure", "Just another game to play.", "2020-07-11"),
+        Game(5345325, "Some Game", "Adventure", "Just some game.", "2021-02-17"),
+        Game(3484504, "Another Game", "Adventure", "Just another game to play.", "2020-07-11"),
       )
       val expected = Json.parse("[{\"id\":5345325,\"title\":\"Some Game\",\"genre\":\"Adventure\"," +
         "\"description\":\"Just some game.\",\"releaseDate\":\"2021-02-17\"},{\"id\":3484504," +
         "\"title\":\"Another Game\",\"genre\":\"Adventure\",\"description\":\"Just another game to play.\"," +
         "\"releaseDate\":\"2020-07-11\"}]")
-      val result = VideoGameEntry.toJson(entries.toIndexedSeq)
+      val result = Game.toJson(entries.toIndexedSeq)
       result mustEqual expected
     }
 
     "create tuple from entry with unapply" in {
-      val entry = VideoGameEntry(5345325, "Some Game", "Adventure", "Just some game.", "2021-02-17")
-      val Some(result) = VideoGameEntry.unapply(entry)
+      val entry = Game(5345325, "Some Game", "Adventure", "Just some game.", "2021-02-17")
+      val Some(result) = Game.unapply(entry)
       result._1 mustEqual 5345325
       result._2 mustEqual "Some Game"
       result._3 mustEqual "Adventure"
@@ -63,10 +89,10 @@ class VideoGameEntrySpec extends PlaySpec {
         "\"title\":\"Another Game\",\"genre\":\"Adventure\",\"description\":\"Just another game to play.\"," +
         "\"releaseDate\":\"2020-07-11\"}]")
       val expected = Array(
-        VideoGameEntry(5345325, "Some Game", "Adventure", "Just some game.", "2021-02-17"),
-        VideoGameEntry(3484504, "Another Game", "Adventure", "Just another game to play.", "2020-07-11"),
+        Game(5345325, "Some Game", "Adventure", "Just some game.", "2021-02-17"),
+        Game(3484504, "Another Game", "Adventure", "Just another game to play.", "2020-07-11"),
       )
-      val Some(result) = VideoGameEntry.fromJsonArray(json)
+      val Some(result) = Game.fromJsonArray(json)
       result mustEqual expected
     }
   }

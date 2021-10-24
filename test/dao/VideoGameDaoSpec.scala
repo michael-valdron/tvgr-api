@@ -7,7 +7,7 @@ import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import slick.jdbc.PostgresProfile.api._
 
-class VideoGameDaoTest extends PlaySpec
+class VideoGameDaoSpec extends PlaySpec
   with GuiceOneAppPerSuite with ScalaFutures with MyDataFixture {
   private val dao = fetchDao[VideoGameDao](app)
 

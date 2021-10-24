@@ -31,4 +31,4 @@ jobs:
     - name: Run tests
       run: sbt test
     - name: Stopping Testing PostgresSQL Database
-      run: docker-compose down postgres
+      run: docker-compose down

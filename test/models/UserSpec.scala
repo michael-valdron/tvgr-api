@@ -13,12 +13,26 @@ class UserSpec extends PlaySpec {
       assert(result.password.isDefined)
       result.password.get mustEqual "password1"
     }
+
+    "create entry from json without password" in {
+      val json = Json.parse("{\"username\":\"user\"}")
+      val Some(result) = User.fromJson(json)
+      result.username mustEqual "user"
+      assert(result.password.isEmpty)
+    }
   }
 
   "toJson" should {
     "create json from single entry" in {
       val entry = User("user", Option("password1"))
       val expected = Json.parse("{\"username\":\"user\",\"password\":\"password1\"}")
+      val result = User.toJson(entry)
+      result mustEqual expected
+    }
+
+    "create json from single entry without password" in {
+      val entry = User("user", None)
+      val expected = Json.parse("{\"username\":\"user\"}")
       val result = User.toJson(entry)
       result mustEqual expected
     }

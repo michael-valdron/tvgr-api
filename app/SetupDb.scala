@@ -7,7 +7,7 @@ import slick.jdbc.PostgresProfile.api._
 
 object SetupDb {
   protected def main(args: Array[String]): Unit = {
-    val db = Database.forConfig("slick.dbs.default.db")
+    val db = Database.forConfig(sys.env("SLICK_TEST_DBPATH"))
     val users = TableQuery[Users]
     val games = TableQuery[Games]
     val setup = DBIO.seq(

@@ -25,5 +25,6 @@ libraryDependencies ++= Seq(
   "com.mohiva" %% "play-silhouette-password-bcrypt" % playSilhouetteVersion,
   "com.mohiva" %% "play-silhouette-persistence" % playSilhouetteVersion,
   "com.mohiva" %% "play-silhouette-crypto-jca" % playSilhouetteVersion,
+  "net.codingwell" %% "scala-guice" % "5.0.2",
   "org.postgresql" % "postgresql" % "42.2.24"
 )

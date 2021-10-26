@@ -21,10 +21,10 @@ import play.api.Configuration
 import play.api.libs.ws.WSClient
 import utils.auth.JWTEnvironment
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration.{Duration, FiniteDuration}
 
-class SilhouetteModule()(implicit ec: ExecutionContext) extends AbstractModule with ScalaModule {
+class SilhouetteModule extends AbstractModule with ScalaModule {
   override def configure(): Unit = {
     bind[Silhouette[JWTEnvironment]].to[SilhouetteProvider[JWTEnvironment]]
     bind[IDGenerator].toInstance(new SecureRandomIDGenerator())

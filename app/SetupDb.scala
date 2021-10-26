@@ -6,7 +6,7 @@ import scala.concurrent.duration.Duration
 import slick.jdbc.PostgresProfile.api._
 
 object SetupDb {
-  protected def main(args: Array[String]): Unit = {
+  def main(args: Array[String]): Unit = {
     val db = Database.forConfig(sys.env("SLICK_TEST_DBPATH"))
     val users = TableQuery[Users]
     val games = TableQuery[Games]

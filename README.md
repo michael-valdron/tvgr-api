@@ -1,6 +1,6 @@
 # The Video Game Repository API
 
-Demo Scala Play web backend for making / view records of a 
+Demo Scala Play web backend for making / view records of 
 video game titles and their information.
 
 ## Requirements

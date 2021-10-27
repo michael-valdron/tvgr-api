@@ -52,11 +52,11 @@ final class GameControllerSpec() extends PlaySpec with DataFixture
     }
   }
 
-  "PUT '/v1/game/add'" must {
+  "PUT '/v1/add'" must {
     "add entry to database and return it" in {
       val newEntry = Json.parse("{\"id\":45363,\"title\":\"Grim Conclusions\",\"genre\":\"Shooter\"," +
         "\"description\":\"\",\"releaseDate\":\"2001-01-13\"}")
-      val futureResult = wsCall(Call("PUT", "/v1/game/add")).put(newEntry)
+      val futureResult = wsCall(Call("PUT", "/v1/add")).put(newEntry)
       val status = futureResult.futureValue.status
       val result = futureResult.futureValue.json
       status mustEqual 200
@@ -81,10 +81,10 @@ final class GameControllerSpec() extends PlaySpec with DataFixture
     }
   }
 
-  "DELETE '/v1/game/243425'" must {
+  "DELETE '/v1/remove/243425'" must {
     "delete entry from database and return it" in {
       val entityId = 243425
-      val futureResult = wsCall(Call("DELETE", s"/v1/game/$entityId")).delete()
+      val futureResult = wsCall(Call("DELETE", s"/v1/remove/$entityId")).delete()
       val status = futureResult.futureValue.status
       val expected = Json.parse(s"{\"id\":$entityId,\"title\":\"Well of Quests\",\"genre\":\"RPG\"," +
         "\"description\":\"An adventure game of the ages!\",\"releaseDate\":\"2005-10-01\"}")

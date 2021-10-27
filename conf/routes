@@ -7,11 +7,11 @@
 GET     /v1/games                   controllers.GameController.getAll
 GET     /v1/game/:entryId           controllers.GameController.getById(entryId: Long)
 
-PUT     /v1/game/add                controllers.GameController.add
+PUT     /v1/add                     controllers.GameController.add
 
 POST    /v1/edit/:entryId           controllers.GameController.editById(entryId: Long)
 
-DELETE  /v1/game/:entryId           controllers.GameController.deleteById(entryId: Long)
+DELETE  /v1/remove/:entryId         controllers.GameController.deleteById(entryId: Long)
 
 # Authentication
 POST    /register                   controllers.SignUpController.signUp

@@ -1,5 +1,5 @@
 name := """tvgr-api"""
-organization := "com.example"
+organization := "ca.michaelvaldron"
 
 version := "1.0-SNAPSHOT"
 

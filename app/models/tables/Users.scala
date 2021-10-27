@@ -10,4 +10,7 @@ class Users(tag: Tag) extends Table[User](tag, "users") {
   def * : ProvenShape[User] = (username, password) <> ((User.apply _).tupled, User.unapply)
 }
 
-object Users extends TableQuery[Users](new Users(_))
+object Users extends TableQuery[Users](new Users(_)) {
+  def filterByUsername(username: String): Query[Users, User, Seq] =
+    this.filter(_.username === username)
+}

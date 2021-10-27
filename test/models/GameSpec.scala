@@ -3,7 +3,7 @@ package models
 import org.scalatestplus.play.PlaySpec
 import play.api.libs.json.Json
 
-class GameSpec extends PlaySpec {
+final class GameSpec extends PlaySpec {
 
   "fromMap" should {
     "create entry from Map" in {

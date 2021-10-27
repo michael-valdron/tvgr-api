@@ -5,24 +5,20 @@ import models.User
 import models.tables.Users
 import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfigProvider}
 import slick.jdbc.JdbcProfile
-import slick.jdbc.PostgresProfile.api._
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class UserDao @Inject()(protected val dbConfigProvider: DatabaseConfigProvider)(implicit ec: ExecutionContext)
-  extends  HasDatabaseConfigProvider[JdbcProfile] {
-  implicit private val users: TableQuery[Users] = TableQuery[Users]
-
-  def filterByUsername(username: String)(implicit query: Query[Users, User, Seq]): Query[Users, User, Seq] =
-    query.filter(_.username === username)
+  extends HasDatabaseConfigProvider[JdbcProfile] {
+  import profile.api._
 
   def find(loginInfo: LoginInfo): Future[Option[User]] =
-    db.run(filterByUsername(loginInfo.providerKey).result.headOption)
+    db.run(Users.filterByUsername(loginInfo.providerKey).result.headOption)
 
-  def save(user: User): Future[User] = db.run(users returning users += user)
+  def save(user: User): Future[User] = db.run(Users returning Users += user)
 
   def update(user: User): Future[User] =
-    db.run(filterByUsername(user.username).update(user).map(_ => user))
+    db.run(Users.filterByUsername(user.username).update(user).map(_ => user))
 
 }

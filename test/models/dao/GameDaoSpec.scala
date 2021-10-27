@@ -1,33 +1,50 @@
 package models.dao
 
-import fixtures.MyDataFixture
 import models.Game
+import models.dao.fixtures.DataFixture
 import models.tables.Games
+import org.scalatest.BeforeAndAfter
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
-import slick.jdbc.PostgresProfile.api._
+import play.api.Application
+import play.api.db.DBApi
+import slick.jdbc.H2Profile.api._
 
-class GameDaoSpec extends PlaySpec
-  with GuiceOneAppPerSuite with ScalaFutures with MyDataFixture {
-  private val dao = fetchDao[GameDao](app)
+final class GameDaoSpec extends PlaySpec with DataFixture
+  with BeforeAndAfter with GuiceOneAppPerSuite with ScalaFutures {
+  private lazy val dao: GameDao = Application.instanceCache[GameDao].apply(app)
+  private lazy val dbApi: DBApi = app.injector.instanceOf[DBApi]
+
+  before(initialize(dbApi))
+  after(teardown(dbApi))
 
   "testGet" should {
-    "pull a record at id = 243425" in withSetupTeardown {
+    "pull a record at id = 243425" in {
       val Some(result) = dao.get(243425).futureValue
-      assert(result === testData(0))
+      result.id mustEqual 243425
+      result.title mustEqual "Well of Quests"
+      result.genre mustEqual "RPG"
+      result.description mustEqual "An adventure game of the ages!"
+      result.releaseDate mustEqual "2005-10-01"
     }
   }
 
   "testGetAll" should {
-    "pull all records" in withSetupTeardown {
+    "pull all records" in {
+      val expected = Array(
+        Game(243425, "Well of Quests", "RPG", "An adventure game of the ages!", "2005-10-01"),
+        Game(546324, "Racing 2020", "Racing", "Race with the best cars of 2020.", "2020-11-12")
+      )
       val result = dao.getAll.futureValue
-      assert((result diff testData) === Seq.empty)
+      result.length mustEqual expected.length
+      result.head.id mustEqual expected.head.id
+      result(1).title mustEqual expected(1).title
     }
   }
 
   "testAdd" should {
-    "add new record '123456' and return it" in withSetupTeardown {
+    "add new record '123456' and return it" in {
       val entry = Game(123456, "A Simple Game", "Platformer",
         "A basic game for the basic gamer.", "2020-04-10")
       val Some(result) = dao.add(entry).futureValue
@@ -38,8 +55,8 @@ class GameDaoSpec extends PlaySpec
   }
 
   "testEdit" should {
-    "edit record '243425' and return it" in withSetupTeardown {
-      val entry = testData.head
+    "edit record '243425' and return it" in {
+      val entry = Game(243425, "Well of Quests", "RPG", "An adventure game of the ages!", "2005-10-01")
       val Some(result) = dao.edit(entry.copy(description = "A different description.")).futureValue
       result.id mustEqual entry.id
       assert(result.description != entry.description)
@@ -47,19 +64,19 @@ class GameDaoSpec extends PlaySpec
   }
 
   "testDelete" should  {
-    "delete record at id = '243425' and return it" in withSetupTeardown {
+    "delete record at id = '243425' and return it" in {
       val Some(result) = dao.delete(243425).futureValue
       assert(result.id === 243425)
     }
   }
 
   "testFilterById" should {
-    "create filter by id query entity for finding record '243425' in 'games' relation" in withSetupTeardown {
-      val db = loadDb
-      val action = dao.filterById(243425)(TableQuery[Games])
-      val result = db.run(action.result).futureValue
-      assert(result.nonEmpty)
-      assert(result.head.id === 243425)
+    "create filter by id query entity for finding record '243425' in 'games' relation" in {
+      val entryId = 243425
+      val result = Games.filterById(entryId)
+      println(result.toString())
+      assert(result.isInstanceOf[Query[Games, Game, Seq]])
+      //assert()
     }
   }
 }

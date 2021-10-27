@@ -12,7 +12,6 @@ jobs:
     runs-on: ubuntu-latest
     env:
       COMPOSE_FILE: .github/docker-compose.yml
-      SLICK_TEST_DBPATH: slick.dbs.default
       POSTGRES_URL: ${{ secrets.POSTGRES_URL }}
       POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
       POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}

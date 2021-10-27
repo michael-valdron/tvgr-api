@@ -1,30 +1,24 @@
 package controllers
 
 import models.Game
-import org.scalatest.BeforeAndAfterAll
+import models.dao.fixtures.DataFixture
+import org.scalatest.BeforeAndAfter
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneServerPerSuite
 import play.api.db.DBApi
-import play.api.db.evolutions.Evolutions
 import play.api.libs.json.Json
 import play.api.libs.ws.WSClient
 import play.api.mvc.Call
 
-final class GameControllerSpec() extends PlaySpec with BeforeAndAfterAll
-  with GuiceOneServerPerSuite with ScalaFutures with IntegrationPatience {
+final class GameControllerSpec() extends PlaySpec with DataFixture
+  with BeforeAndAfter with GuiceOneServerPerSuite with ScalaFutures
+  with IntegrationPatience {
   implicit private val ws: WSClient = app.injector.instanceOf(classOf[WSClient])
   private lazy val dbApi = app.injector.instanceOf[DBApi]
 
-  override def beforeAll(): Unit = {
-    super.beforeAll()
-    Evolutions.applyEvolutions(dbApi.database("default"))
-  }
-
-  override def afterAll(): Unit = {
-    Evolutions.cleanupEvolutions(dbApi.database("default"))
-    super.afterAll()
-  }
+  before(initialize(dbApi))
+  after(teardown(dbApi))
 
   "GET '/v1/games'" must {
     "return all records" in {
@@ -61,7 +55,7 @@ final class GameControllerSpec() extends PlaySpec with BeforeAndAfterAll
   "PUT '/v1/game/add'" must {
     "add entry to database and return it" in {
       val newEntry = Json.parse("{\"id\":45363,\"title\":\"Grim Conclusions\",\"genre\":\"Shooter\"," +
-        "\"description\":\"\",\"releaseDate\":\"2001-01-13\"")
+        "\"description\":\"\",\"releaseDate\":\"2001-01-13\"}")
       val futureResult = wsCall(Call("PUT", "/v1/game/add")).put(newEntry)
       val status = futureResult.futureValue.status
       val result = futureResult.futureValue.json

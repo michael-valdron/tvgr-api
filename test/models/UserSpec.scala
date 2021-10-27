@@ -3,7 +3,7 @@ package models
 import org.scalatestplus.play.PlaySpec
 import play.api.libs.json.Json
 
-class UserSpec extends PlaySpec {
+final class UserSpec extends PlaySpec {
 
   "fromJson" should {
     "create entry from json" in {

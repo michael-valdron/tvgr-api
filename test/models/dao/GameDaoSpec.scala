@@ -1,30 +1,23 @@
 package models.dao
 
 import models.Game
+import models.dao.fixtures.DataFixture
 import models.tables.Games
-import org.scalatest.BeforeAndAfterAll
+import org.scalatest.BeforeAndAfter
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.Application
 import play.api.db.DBApi
-import play.api.db.evolutions.Evolutions
-import slick.jdbc.PostgresProfile.api._
+import slick.jdbc.H2Profile.api._
 
-final class GameDaoSpec extends PlaySpec
-  with GuiceOneAppPerSuite with ScalaFutures with BeforeAndAfterAll {
-  private lazy val dao = Application.instanceCache[GameDao].apply(app)
-  private lazy val dbApi = app.injector.instanceOf[DBApi]
+final class GameDaoSpec extends PlaySpec with DataFixture
+  with BeforeAndAfter with GuiceOneAppPerSuite with ScalaFutures {
+  private lazy val dao: GameDao = Application.instanceCache[GameDao].apply(app)
+  private lazy val dbApi: DBApi = app.injector.instanceOf[DBApi]
 
-  override protected def beforeAll(): Unit = {
-    super.beforeAll()
-    Evolutions.applyEvolutions(dbApi.database("default"))
-  }
-
-  override protected def afterAll(): Unit = {
-    Evolutions.cleanupEvolutions(dbApi.database("default"))
-    super.afterAll()
-  }
+  before(initialize(dbApi))
+  after(teardown(dbApi))
 
   "testGet" should {
     "pull a record at id = 243425" in {
@@ -80,7 +73,7 @@ final class GameDaoSpec extends PlaySpec
   "testFilterById" should {
     "create filter by id query entity for finding record '243425' in 'games' relation" in {
       val entryId = 243425
-      val result = dao.filterById(entryId)(TableQuery[Games])
+      val result = Games.filterById(entryId)
       println(result.toString())
       assert(result.isInstanceOf[Query[Games, Game, Seq]])
       //assert()

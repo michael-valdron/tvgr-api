@@ -2,14 +2,12 @@ package models.dao
 
 import models.Game
 import models.dao.fixtures.DataFixture
-import models.tables.Games
 import org.scalatest.BeforeAndAfter
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.Application
 import play.api.db.DBApi
-import slick.jdbc.H2Profile.api._
 
 final class GameDaoSpec extends PlaySpec with DataFixture
   with BeforeAndAfter with GuiceOneAppPerSuite with ScalaFutures {
@@ -67,16 +65,6 @@ final class GameDaoSpec extends PlaySpec with DataFixture
     "delete record at id = '243425' and return it" in {
       val Some(result) = dao.delete(243425).futureValue
       assert(result.id === 243425)
-    }
-  }
-
-  "testFilterById" should {
-    "create filter by id query entity for finding record '243425' in 'games' relation" in {
-      val entryId = 243425
-      val result = Games.filterById(entryId)
-      println(result.toString())
-      assert(result.isInstanceOf[Query[Games, Game, Seq]])
-      //assert()
     }
   }
 }

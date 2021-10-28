@@ -1,8 +1,7 @@
 package fixtures
 
-import com.mohiva.play.silhouette.api.util.PasswordHasherRegistry
+import com.mohiva.play.silhouette.api.util.{PasswordHasherRegistry, PasswordInfo}
 import com.mohiva.play.silhouette.password.{BCryptPasswordHasher, BCryptSha256PasswordHasher}
-import fixtures.DataFixture.hash
 import models.tables.{Games, Users}
 import models.{Game, User}
 import play.api.db.DBApi
@@ -17,14 +16,21 @@ import scala.concurrent.duration.Duration
 trait DataFixture extends {
   private val configName: String = "default"
   private val configPath: String = s"slick.dbs.$configName.db"
+  private val hasherRegistry: PasswordHasherRegistry =
+    PasswordHasherRegistry(
+      new BCryptSha256PasswordHasher(),
+      Seq(new BCryptPasswordHasher()))
 
   protected val testUsersData: Array[User] = Array(
-    User("user", hash("password1"))
+    User("user", Some(hash("password1").password))
   )
   protected val testGamesData: Seq[Game] = Seq(
     Game(243425, "Well of Quests", "RPG", "An adventure game of the ages!", "2005-10-01"),
     Game(546324, "Racing 2020", "Racing", "Race with the best cars of 2020.", "2020-11-12")
   )
+
+  protected def hash(password: String): PasswordInfo =
+    hasherRegistry.current.hash(password)
 
   protected def initialize(dbApi: DBApi): Unit = {
     val db = Database.forConfig(configPath)
@@ -40,12 +46,4 @@ trait DataFixture extends {
   protected def teardown(dbApi: DBApi): Unit = {
     Evolutions.cleanupEvolutions(dbApi.database(configName))
   }
-}
-
-object DataFixture {
-  private def hash(password: String): Option[String] =
-    Some(
-      PasswordHasherRegistry(new BCryptSha256PasswordHasher(), Seq(new BCryptPasswordHasher()))
-        .current.hash(password).password
-    )
 }

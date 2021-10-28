@@ -9,7 +9,7 @@ GET     /v1/game/:entryId           controllers.GameController.getById(entryId: 
 
 PUT     /v1/add                     controllers.GameController.add
 
-POST    /v1/edit/:entryId           controllers.GameController.editById(entryId: Long)
+POST    /v1/edit                    controllers.GameController.edit
 
 DELETE  /v1/remove/:entryId         controllers.GameController.deleteById(entryId: Long)
 

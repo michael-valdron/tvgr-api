@@ -8,6 +8,13 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 import scala.reflect.ClassTag
 
+/**
+ * Data Access Object for fetching password information from users relation
+ *
+ * @param userDao Data Access Object for users relation to use with
+ * @param classTag `PasswordInfo` class tag
+ * @param ec Execution context for managing concurrency
+ */
 class PasswordInfoDao @Inject()(userDao: UserDao)(implicit val classTag: ClassTag[PasswordInfo], ec: ExecutionContext)
   extends DelegableAuthInfoDAO[PasswordInfo] {
 

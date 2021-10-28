@@ -13,7 +13,7 @@ import scala.concurrent.Await
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration.Duration
 
-class PasswordInfoDaoSpec extends PlaySpec with DataFixture
+final class PasswordInfoDaoSpec extends PlaySpec with DataFixture
   with BeforeAndAfter with GuiceOneAppPerSuite with ScalaFutures {
   private lazy val userDao: UserDao = Application.instanceCache[UserDao].apply(app)
   private lazy val passwordDao: PasswordInfoDao = new PasswordInfoDao(userDao)

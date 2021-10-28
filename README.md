@@ -32,6 +32,8 @@ thanks to the
 | POSTGRES_PASSWORD        | The password for the user defined above.      |
 | POSTGRES_THREADS         | Number of threads for database actions. Example: `10` |
 | POSTGRES_MAX_CONNECTIONS | Max number of connection to database at one given time. **Note**: This must be at most as much as `POSTGRES_THREADS` or there can be problems. 
+| PLAY_HTTP_SECRET_KEY     | The HTTP secret key for this Play application. Ensure all application instances that use the same authentication methods have the same key. |
+| SILHOUETTE_SHARED_SECRET | The shared secret to sign the JWT tokens.     |
 
 ### Database
 

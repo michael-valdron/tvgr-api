@@ -9,11 +9,10 @@ import com.mohiva.play.silhouette.impl.providers.CredentialsProvider
 import controllers.components.{SilhouetteComponents, SilhouetteControllerComponents}
 import models.services.UserService
 import play.api.Logging
-import play.api.i18n.I18nSupport
 import play.api.mvc._
 
 abstract class SilhouetteController(override protected val controllerComponents: SilhouetteControllerComponents)
-  extends MessagesAbstractController(controllerComponents) with SilhouetteComponents with I18nSupport with Logging {
+  extends AbstractController(controllerComponents) with SilhouetteComponents with Logging {
   def SecuredAction: SecuredActionBuilder[EnvType, AnyContent] = controllerComponents.silhouette.SecuredAction
   def UnsecuredAction: UnsecuredActionBuilder[EnvType, AnyContent] = controllerComponents.silhouette.UnsecuredAction
 

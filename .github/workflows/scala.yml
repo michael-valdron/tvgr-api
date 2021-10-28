@@ -17,6 +17,8 @@ jobs:
       POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
       POSTGRES_THREADS: 10
       POSTGRES_MAX_CONNECTIONS: 10
+      PLAY_HTTP_SECRET_KEY: ${{ secrets.PLAY_HTTP_SECRET_KEY }}
+      SILHOUETTE_SHARED_SECRET: ${{ secrets.SILHOUETTE_SHARED_SECRET }}
 
     steps:
     - uses: actions/checkout@v2

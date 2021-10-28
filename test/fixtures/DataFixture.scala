@@ -1,8 +1,8 @@
-package models.dao.fixtures
+package fixtures
 
 import com.mohiva.play.silhouette.api.util.PasswordHasherRegistry
 import com.mohiva.play.silhouette.password.{BCryptPasswordHasher, BCryptSha256PasswordHasher}
-import models.dao.fixtures.DataFixture.hash
+import fixtures.DataFixture.hash
 import models.tables.{Games, Users}
 import models.{Game, User}
 import play.api.db.DBApi

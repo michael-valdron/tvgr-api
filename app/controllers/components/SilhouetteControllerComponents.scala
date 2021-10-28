@@ -1,5 +1,5 @@
 package controllers.components
 
-import play.api.mvc.MessagesControllerComponents
+import play.api.mvc.ControllerComponents
 
-trait SilhouetteControllerComponents extends MessagesControllerComponents with SilhouetteComponents
+trait SilhouetteControllerComponents extends ControllerComponents with SilhouetteComponents

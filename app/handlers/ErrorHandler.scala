@@ -16,7 +16,7 @@ class ErrorHandler @Inject()(environment: Environment, sourceMapper: OptionalSou
   override def onClientError(request: RequestHeader, statusCode: Int, message: String): Future[Result] = {
     if (statusCode == 404)
       Future.successful(
-        NotFound(ErrorHandler.createJson(request.id.toString, if (message.isBlank) "Not Found" else message))
+        NotFound(ErrorHandler.createJson(request.id.toString, if (message == "") "Not Found" else message))
       )
     else
       super.onClientError(request, statusCode, message)

@@ -46,7 +46,7 @@ final class GameControllerSpec() extends PlaySpec with DataFixture
       val futureResult = wsCall(Call("GET", s"/v1/game/$entityId")).get()
       val status = futureResult.futureValue.status
       val result = Game.fromJson(futureResult.futureValue.json)
-      assert(status == 200, futureResult.futureValue.body)
+      assert(200 == status, futureResult.futureValue.body)
       assert(result.nonEmpty)
       result.get.id mustEqual entityId
     }
@@ -59,7 +59,7 @@ final class GameControllerSpec() extends PlaySpec with DataFixture
       val futureResult = wsCall(Call("PUT", "/v1/add")).put(newEntry)
       val status = futureResult.futureValue.status
       val result = futureResult.futureValue.json
-      assert(status == 200, futureResult.futureValue.body)
+      assert(200 == status, futureResult.futureValue.body)
       result mustEqual newEntry
     }
 
@@ -67,7 +67,7 @@ final class GameControllerSpec() extends PlaySpec with DataFixture
       val newEntry = Json.parse("{\"id\":12345,\"abc\":\"123\"}")
       val futureResult = wsCall(Call("PUT", "/v1/add")).put(newEntry)
       val status = futureResult.futureValue.status
-      assert(status == 400, futureResult.futureValue.body)
+      assert(400 == status, futureResult.futureValue.body)
     }
 
     "try to add entry with existent id and return 409 conflict" in {
@@ -75,7 +75,7 @@ final class GameControllerSpec() extends PlaySpec with DataFixture
         "\"description\":\"\",\"releaseDate\":\"2001-01-13\"}")
       val futureResult = wsCall(Call("PUT", "/v1/add")).put(newEntry)
       val status = futureResult.futureValue.status
-      assert(status == 409, futureResult.futureValue.body)
+      assert(409 == status, futureResult.futureValue.body)
     }
   }
 
@@ -88,7 +88,7 @@ final class GameControllerSpec() extends PlaySpec with DataFixture
       val futureResult = wsCall(Call("POST", s"/v1/edit")).post(data)
       val status = futureResult.futureValue.status
       val result = Game.fromJson(futureResult.futureValue.json)
-      assert(status == 200, futureResult.futureValue.body)
+      assert(200 == status, futureResult.futureValue.body)
       assert(result.nonEmpty, s"result is empty")
       assert(result.get.id == entityId, s"expected id = $entityId, but got id = ${result.get.id}")
       assert(result.get.description != entityDescription, "description field was not edited")
@@ -100,7 +100,7 @@ final class GameControllerSpec() extends PlaySpec with DataFixture
       val data = Json.parse(s"{\"id\":$entityId,\"abc\":\"123\"}")
       val futureResult = wsCall(Call("POST", s"/v1/edit")).post(data)
       val status = futureResult.futureValue.status
-      assert(status == 400, futureResult.futureValue.body)
+      assert(400 == status, futureResult.futureValue.body)
     }
 
     "try to edit entry with non-existent id and return 404 not found" in {
@@ -110,7 +110,7 @@ final class GameControllerSpec() extends PlaySpec with DataFixture
         "\"description\":\"A different description.\",\"releaseDate\":\"2005-10-01\"}")
       val futureResult = wsCall(Call("POST", s"/v1/edit")).post(data)
       val status = futureResult.futureValue.status
-      assert(status == 404, futureResult.futureValue.body)
+      assert(404 == status, futureResult.futureValue.body)
     }
   }
 
@@ -122,7 +122,7 @@ final class GameControllerSpec() extends PlaySpec with DataFixture
       val expected = Json.parse(s"{\"id\":$entityId,\"title\":\"Well of Quests\",\"genre\":\"RPG\"," +
         "\"description\":\"An adventure game of the ages!\",\"releaseDate\":\"2005-10-01\"}")
       val result = futureResult.futureValue.json
-      assert(status == 200, futureResult.futureValue.body)
+      assert(200 == status, futureResult.futureValue.body)
       result mustEqual expected
     }
 
@@ -130,7 +130,7 @@ final class GameControllerSpec() extends PlaySpec with DataFixture
       val entityId = 123456
       val futureResult = wsCall(Call("DELETE", s"/v1/remove/$entityId")).delete()
       val status = futureResult.futureValue.status
-      assert(status == 404, futureResult.futureValue.body)
+      assert(404 == status, futureResult.futureValue.body)
     }
   }
 }

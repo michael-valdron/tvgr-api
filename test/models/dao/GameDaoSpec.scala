@@ -1,7 +1,7 @@
 package models.dao
 
 import models.Game
-import models.dao.fixtures.DataFixture
+import fixtures.DataFixture
 import org.scalatest.BeforeAndAfter
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.play.PlaySpec

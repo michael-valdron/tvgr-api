@@ -28,3 +28,5 @@ libraryDependencies ++= Seq(
   "net.codingwell" %% "scala-guice" % "5.0.2",
   "org.postgresql" % "postgresql" % "42.2.24"
 )
+
+enablePlugins(JavaAppPackaging)

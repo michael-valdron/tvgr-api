@@ -103,6 +103,29 @@ docker up -d postgres && sbt test # if database is not deployed yet
 |  POST  |     `/register`      |              |
 |  POST  |   `/login`           |              |
 
+## JSON Schemes
+
+### User Example
+
+```json
+{
+  "username": "user",
+  "password": "password1"
+}
+```
+
+### Game Example
+
+```json
+{
+  "id": 243425,
+  "title": "Well of Quests",
+  "genre": "RPG",
+  "description": "An adventure game of the ages!",
+  "releaseDate": "2005-10-01"
+}
+```
+
 ## References
 
 ### Authentication

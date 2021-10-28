@@ -1,5 +1,6 @@
 logs
 target
+project/boot
 /.bsp
 /.idea
 /.idea_modules

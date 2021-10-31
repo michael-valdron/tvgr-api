@@ -34,9 +34,5 @@ jobs:
       with:
         java-version: '11'
         distribution: 'adopt'
-    - name: Starting Testing PostgreSQL Database
-      run: docker-compose up -d postgres
     - name: Run tests
       run: sbt test
-    - name: Stopping Testing PostgresSQL Database
-      run: docker-compose down

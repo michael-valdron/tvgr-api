@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     services:
       mongo:
-        image: mongo:latest
+        image: postgres:latest
         env:
           POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
         ports:
